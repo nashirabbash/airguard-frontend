@@ -1,0 +1,12 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+@media (max-width: 767px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+}

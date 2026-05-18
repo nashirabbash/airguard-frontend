@@ -1,0 +1,5 @@
+.root {
+  background: var(--color-card-status);
+  padding: var(--space-sm) var(--space-lg);
+  box-shadow: var(--shadow-card);
+}

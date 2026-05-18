@@ -1,0 +1,12 @@
+.root {
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+.main {
+  flex: 1;
+  background: #ffffff;
+}

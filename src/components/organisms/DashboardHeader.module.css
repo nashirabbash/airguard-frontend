@@ -1,0 +1,28 @@
+.root {
+  overflow: hidden;
+  padding: var(--space-md) var(--space-lg);
+  display: grid;
+  grid-template-areas: "title illustration clock wifi";
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--space-lg);
+  min-height: 180px;
+}
+
+.title        { grid-area: title;        align-self: start; }
+.illustration { grid-area: illustration; }
+.clock        { grid-area: clock;        justify-self: center; }
+.wifi         { grid-area: wifi;         align-self: start; }
+
+@media (max-width: 767px) {
+  .root {
+    grid-template-areas:
+      "title wifi"
+      "illustration illustration"
+      "clock clock";
+    grid-template-columns: 1fr auto;
+    min-height: auto;
+    gap: var(--space-md);
+  }
+  .clock { justify-self: center; }
+}

@@ -1,0 +1,9 @@
+.root {
+  font-family: var(--font-display);
+  color: var(--color-text-secondary);
+  line-height: 1;
+  align-self: flex-end;
+  padding-bottom: 4px;
+}
+.sm { font-size: var(--text-value-unit); }
+.md { font-size: var(--text-value-lg); }

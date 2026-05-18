@@ -1,0 +1,13 @@
+.root {
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: var(--text-status);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.aman    { color: var(--color-status-safe); }
+.waspada { color: var(--color-status-warning); }
+.bahaya  {
+  color: var(--color-status-danger);
+  animation: pulse 1.5s infinite;
+}

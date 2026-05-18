@@ -1,0 +1,9 @@
+.root {
+  font-family: var(--font-label);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+}
+.xs { font-size: var(--text-label); }
+.sm { font-size: 0.85rem; }

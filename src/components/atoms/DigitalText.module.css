@@ -1,0 +1,9 @@
+.root {
+  font-family: var(--font-display);
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+.sm  { font-size: var(--text-label); }
+.md  { font-size: var(--text-value-unit); }
+.lg  { font-size: var(--text-value-lg); }
+.xl  { font-size: var(--text-clock); }

@@ -1,0 +1,13 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 1;
+}
+.sep {
+  font-family: var(--font-display);
+  font-size: var(--text-clock);
+  color: var(--color-text-primary);
+  line-height: 1;
+  animation: blink 1s step-end infinite;
+}

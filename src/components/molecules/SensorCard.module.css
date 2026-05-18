@@ -1,0 +1,13 @@
+.root {
+  padding: var(--space-md);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  animation: fadeInUp 0.4s ease both;
+}
+.temp     { background: var(--color-card-temp); }
+.humidity { background: var(--color-card-humidity); }
+.gas      { background: var(--color-card-gas); }
+.flash    { animation: flash 0.2s ease !important; }

@@ -1,0 +1,112 @@
+/* DSEGWeather — weather icon glyphs */
+@font-face {
+  font-family: 'DSEGWeather';
+  src: url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEGWeather/DSEGWeather.woff2') format('woff2'),
+       url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEGWeather/DSEGWeather.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* DSEG7Classic — 7-segment digits (clock, sensor numbers) */
+@font-face {
+  font-family: 'DSEG7Classic';
+  src: url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG7-Classic/DSEG7Classic-Regular.woff2') format('woff2'),
+       url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG7-Classic/DSEG7Classic-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* DSEG14Classic — 14-segment alphanumeric (labels, status text) */
+@font-face {
+  font-family: 'DSEG14Classic';
+  src: url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG14-Classic/DSEG14Classic-Regular.woff2') format('woff2'),
+       url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG14-Classic/DSEG14Classic-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DSEG14Classic';
+  src: url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG14-Classic/DSEG14Classic-Bold.woff2') format('woff2'),
+       url('/fonts/fonts-DSEG_v046/fonts-DSEG_v046/DSEG14-Classic/DSEG14Classic-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-bg-sky-top: #a8d4f0;
+  --color-bg-sky-bottom: #dceefa;
+  --color-card-status: #e8f0dc;
+  --color-card-temp: #fde8cc;
+  --color-card-humidity: #d6e8f8;
+  --color-card-gas: #e8d6f8;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #444444;
+  --color-status-safe: #2a7a2a;
+  --color-status-danger: #cc2222;
+  --color-status-warning: #cc8800;
+
+  --font-display: 'DSEG7Classic', 'Courier New', monospace;
+  --font-label: 'DSEG14Classic', 'Courier New', monospace;
+  --font-weather: 'DSEGWeather', sans-serif;
+
+  --text-clock: clamp(3rem, 10vw, 6rem);
+  --text-value-lg: clamp(2rem, 7vw, 4rem);
+  --text-value-unit: clamp(1rem, 3vw, 1.5rem);
+  --text-label: clamp(0.65rem, 1.5vw, 0.85rem);
+  --text-status: clamp(1.2rem, 4vw, 2rem);
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --radius-card: 16px;
+  --radius-badge: 8px;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-label);
+  color: var(--color-text-primary);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes flash {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.25); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
