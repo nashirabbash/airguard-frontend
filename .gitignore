@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local extras
+fonts-DSEG_v046.zip
+fonts-DSEG_v046/
+desktop.ini
+air-monitor-ui-briefing.md
