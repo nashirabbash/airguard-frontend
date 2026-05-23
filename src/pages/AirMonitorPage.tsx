@@ -134,12 +134,26 @@ export function AirMonitorPage() {
 
       ws.onopen = () => {
         setData(prev => ({ ...prev, wifiStatus: 'online' }));
+        // Send subscribe message with token and device_id immediately on open
+        ws.send(JSON.stringify({
+          type: 'subscribe',
+          token,
+          device_id: selectedDeviceId,
+        }));
       };
 
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
           
+          if (msg.type === 'error') {
+            console.error('WebSocket error response received:', msg.error?.message || 'Unknown error');
+            if (msg.error?.code === 'UNAUTHORIZED') {
+              window.dispatchEvent(new Event('auth_unauthorized'));
+            }
+            return;
+          }
+
           if (msg.type === 'snapshot' && msg.current) {
             // Only update dashboard if snapshot matches currently selected device
             if (msg.current.device_id === selectedDeviceId) {
@@ -175,7 +189,8 @@ export function AirMonitorPage() {
         reconnectTimer = window.setTimeout(connect, 5000);
       };
 
-      ws.onerror = () => {
+      ws.onerror = (error) => {
+        console.error('WebSocket runtime connection error:', error);
         ws.close();
       };
     };
