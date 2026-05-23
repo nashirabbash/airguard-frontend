@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './DeviceConfigModal.module.css';
 import type { Device } from '../../types';
 
@@ -81,7 +82,7 @@ const DeviceConfigModal: React.FC<DeviceConfigModalProps> = ({
     onSubmit(formData);
   };
 
-  return (
+  return createPortal(
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
@@ -248,7 +249,7 @@ const DeviceConfigModal: React.FC<DeviceConfigModalProps> = ({
         </form>
       </div>
     </div>
-  );
+  , document.body);
 };
 
 export default DeviceConfigModal;
