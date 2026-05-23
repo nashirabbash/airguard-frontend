@@ -2,18 +2,22 @@ import { SensorCard } from '../molecules/SensorCard';
 import styles from './SensorGrid.module.css';
 
 interface Props {
-  temperature: number;
-  humidity: number;
-  gasLevel: number;
+  temperature: number | null;
+  humidity: number | null;
+  gasLevel: number | null;
 }
 
 export function SensorGrid({ temperature, humidity, gasLevel }: Props) {
+  const tempValue   = temperature !== null ? temperature.toFixed(1) : '--';
+  const humidValue  = humidity    !== null ? humidity               : '--';
+  const gasValue    = gasLevel    !== null ? gasLevel               : '--';
+
   return (
     <section className={styles.root} aria-label="Data sensor">
       <SensorCard
         label="SUHU"
         icon="thermometer"
-        value={temperature.toFixed(1)}
+        value={tempValue}
         unit="°C"
         colorTheme="temp"
         style={{ animationDelay: '0ms' }}
@@ -21,7 +25,7 @@ export function SensorGrid({ temperature, humidity, gasLevel }: Props) {
       <SensorCard
         label="KELEMBAPAN"
         icon="droplet"
-        value={humidity}
+        value={humidValue}
         unit="%"
         colorTheme="humidity"
         style={{ animationDelay: '100ms' }}
@@ -29,7 +33,7 @@ export function SensorGrid({ temperature, humidity, gasLevel }: Props) {
       <SensorCard
         label="GAS (MQ-135)"
         icon="gas"
-        value={gasLevel}
+        value={gasValue}
         unit="PPM"
         colorTheme="gas"
         style={{ animationDelay: '200ms' }}

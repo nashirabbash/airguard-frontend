@@ -25,7 +25,18 @@ const MOCK_DATA: SensorData = {
   temperature: 0,
   humidity: 0,
   gasLevel: 0,
+  hasLiveData: false,
 };
+
+// Map backend room_status strings (lowercase) to UI RoomStatus values
+const ROOM_STATUS_MAP: Record<string, RoomStatus> = {
+  normal:  'aman',
+  warning: 'waspada',
+  danger:  'bahaya',
+};
+function mapRoomStatus(backendStatus: string): RoomStatus {
+  return ROOM_STATUS_MAP[backendStatus.toLowerCase()] ?? 'aman';
+}
 
 function formatTime(date: Date): string {
   return date.toLocaleTimeString('id-ID', {
@@ -133,6 +144,8 @@ export function AirMonitorPage() {
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
+        // Mark connection online but do NOT set hasLiveData yet —
+        // wait for snapshot/telemetry to arrive before showing real values.
         setData(prev => ({ ...prev, wifiStatus: 'online' }));
         // Send subscribe message with token and device_id immediately on open
         ws.send(JSON.stringify({
@@ -154,27 +167,32 @@ export function AirMonitorPage() {
             return;
           }
 
-          if (msg.type === 'snapshot' && msg.current) {
-            // Only update dashboard if snapshot matches currently selected device
-            if (msg.current.device_id === selectedDeviceId) {
+          if (msg.type === 'snapshot') {
+            if (msg.current && msg.current.device_id === selectedDeviceId) {
+              // Device has readings — update dashboard with backend-owned status
               setData(prev => ({
                 ...prev,
+                hasLiveData: true,
                 temperature: msg.current.temperature,
                 humidity: msg.current.humidity,
                 gasLevel: msg.current.mq135_value,
-                roomStatus: msg.current.room_status.toUpperCase() as RoomStatus,
+                roomStatus: mapRoomStatus(msg.current.room_status),
                 lastUpdate: formatTimestamp(msg.current.timestamp),
               }));
+            } else if (!msg.current) {
+              // Device exists but has no readings yet — show -- values
+              setData(prev => ({ ...prev, hasLiveData: false }));
             }
           } else if (msg.type === 'telemetry_reading' && msg.data) {
             // Only update dashboard if telemetry reading matches currently selected device
             if (msg.data.device_id === selectedDeviceId) {
               setData(prev => ({
                 ...prev,
+                hasLiveData: true,
                 temperature: msg.data.temperature,
                 humidity: msg.data.humidity,
                 gasLevel: msg.data.mq135_value,
-                roomStatus: msg.data.room_status.toUpperCase() as RoomStatus,
+                roomStatus: mapRoomStatus(msg.data.room_status),
                 lastUpdate: formatTimestamp(msg.data.timestamp),
               }));
             }
@@ -185,7 +203,8 @@ export function AirMonitorPage() {
       };
 
       ws.onclose = () => {
-        setData(prev => ({ ...prev, wifiStatus: 'offline' }));
+        // Reset hasLiveData so stale sensor values are not shown during reconnect
+        setData(prev => ({ ...prev, wifiStatus: 'offline', hasLiveData: false }));
         reconnectTimer = window.setTimeout(connect, 5000);
       };
 
@@ -282,8 +301,14 @@ export function AirMonitorPage() {
                   SILAKAN PILIH PERANGKAT AKTIF
                 </span>
               </div>
-            ) : (
+            ) : data.hasLiveData ? (
               <StatusBar status={data.roomStatus} lastUpdate={data.lastUpdate} />
+            ) : (
+              <div style={{ padding: '8px 16px', background: 'var(--color-card-status)', display: 'flex', justifyContent: 'center' }}>
+                <span style={{ fontFamily: 'var(--font-label)', fontSize: '1rem', color: 'var(--color-status-warning)' }}>
+                  {data.wifiStatus === 'online' ? 'MENUNGGU DATA SENSOR...' : 'PERANGKAT OFFLINE'}
+                </span>
+              </div>
             )
           ) : (
             <div style={{ padding: '8px 16px', background: 'var(--color-card-status)', display: 'flex', justifyContent: 'center' }}>
@@ -335,9 +360,9 @@ export function AirMonitorPage() {
               />
             ) : (
               <SensorGrid
-                temperature={data.temperature}
-                humidity={data.humidity}
-                gasLevel={data.gasLevel}
+                temperature={data.hasLiveData ? data.temperature : null}
+                humidity={data.hasLiveData ? data.humidity : null}
+                gasLevel={data.hasLiveData ? data.gasLevel : null}
               />
             )
           ) : (
