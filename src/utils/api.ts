@@ -48,3 +48,14 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
     };
   }
 }
+
+import type { User, Device } from '../types';
+
+export async function getMe(): Promise<{ success: boolean; data?: User; message?: string; code: number }> {
+  return apiFetch<User>('/api/auth/users/me');
+}
+
+export async function getDevices(userId: number): Promise<{ success: boolean; data?: Device[]; message?: string; code: number }> {
+  return apiFetch<Device[]>(`/api/device/user/${userId}`);
+}
+

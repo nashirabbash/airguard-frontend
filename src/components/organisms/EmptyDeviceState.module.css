@@ -1,0 +1,78 @@
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xl);
+  min-height: 350px;
+  width: 100%;
+}
+
+.card {
+  background: var(--color-card-temp);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border: 2px solid var(--color-status-warning);
+  animation: flash 3s infinite;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--color-status-warning);
+  padding-bottom: var(--space-sm);
+}
+
+.title {
+  font-family: var(--font-label);
+  color: var(--color-status-warning);
+  font-size: var(--text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.statusIndicator {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  color: var(--color-status-danger);
+  animation: blink 1s infinite;
+  font-weight: bold;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: center;
+  text-align: center;
+}
+
+.icon {
+  font-family: var(--font-weather);
+  font-size: 3rem;
+  color: var(--color-status-warning);
+  margin-bottom: var(--space-xs);
+}
+
+.message {
+  font-family: var(--font-label);
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+}
+
+.subMessage {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  line-height: 1.5;
+}

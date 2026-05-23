@@ -1,0 +1,135 @@
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xl);
+  min-height: 400px;
+  width: 100%;
+}
+
+.card {
+  background: var(--color-card-humidity);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border: 2px solid #b8a6d8;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #b8a6d8;
+  padding-bottom: var(--space-sm);
+}
+
+.title {
+  font-family: var(--font-label);
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.statusIndicator {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-badge);
+  text-transform: uppercase;
+}
+
+.deviceList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+}
+
+/* Custom Scrollbar for Retro Feel */
+.deviceList::-webkit-scrollbar {
+  width: 6px;
+}
+.deviceList::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+.deviceList::-webkit-scrollbar-thumb {
+  background: #b8a6d8;
+  border-radius: 3px;
+}
+
+.deviceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  background: #ffffff;
+  border: 2px solid #b8a6d8;
+  border-radius: var(--radius-badge);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  outline: none;
+}
+
+.deviceItem:hover {
+  border-color: var(--color-text-primary);
+  box-shadow: 0 4px 12px rgba(184, 166, 216, 0.3);
+  transform: translateY(-2px);
+}
+
+.deviceItemActive {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+  color: #ffffff;
+}
+
+.deviceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.deviceIdLabel {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.deviceItemActive .deviceIdLabel {
+  color: #cccccc;
+}
+
+.deviceIdVal {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.05em;
+}
+
+.selectIndicator {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  text-transform: uppercase;
+  padding: 4px var(--space-sm);
+  border-radius: var(--radius-badge);
+  border: 1px solid currentColor;
+}
+
+.deviceItemActive .selectIndicator {
+  background: #ffffff;
+  color: var(--color-text-primary);
+  border-color: #ffffff;
+  font-weight: bold;
+}
