@@ -76,3 +76,22 @@
   text-transform: uppercase;
   line-height: 1.5;
 }
+
+.createButton {
+  margin-top: var(--space-md);
+  background: transparent;
+  border: 1px solid var(--color-status-warning);
+  color: var(--color-status-warning);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.createButton:hover {
+  background: rgba(230, 162, 60, 0.1);
+  box-shadow: 0 0 10px rgba(230, 162, 60, 0.3);
+}

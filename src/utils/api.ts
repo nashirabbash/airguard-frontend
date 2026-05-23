@@ -59,3 +59,22 @@ export async function getDevices(userId: number): Promise<{ success: boolean; da
   return apiFetch<Device[]>(`/api/device/user/${userId}`);
 }
 
+export async function createDevice(deviceConfig: Omit<Device, 'userId' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; data?: Device; message?: string; code: number }> {
+  return apiFetch<Device>('/api/device/register', {
+    method: 'POST',
+    body: deviceConfig,
+  });
+}
+
+export async function updateDevice(deviceId: string, deviceConfig: Omit<Device, 'deviceId' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; data?: Device; message?: string; code: number }> {
+  return apiFetch<Device>(`/api/device/${deviceId}`, {
+    method: 'PUT',
+    body: deviceConfig,
+  });
+}
+
+export async function deleteDevice(deviceId: string): Promise<{ success: boolean; message?: string; code: number }> {
+  return apiFetch<undefined>(`/api/device/delete?deviceId=${deviceId}`, {
+    method: 'DELETE',
+  });
+}

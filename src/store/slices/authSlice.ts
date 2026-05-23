@@ -1,0 +1,30 @@
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+
+
+interface AuthState {
+  token: string | null;
+}
+
+const initialState: AuthState = {
+  token: sessionStorage.getItem('airguard_token'),
+};
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+      sessionStorage.setItem('airguard_token', action.payload);
+    },
+    logout: (state) => {
+      state.token = null;
+      sessionStorage.removeItem('airguard_token');
+      sessionStorage.removeItem('airguard_selected_device');
+    },
+  },
+});
+
+export const { setToken, logout } = authSlice.actions;
+export default authSlice.reducer;
