@@ -1,0 +1,136 @@
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xl);
+  min-height: 400px;
+  width: 100%;
+}
+
+.card {
+  background: var(--color-card-gas); /* using gas card purple as base, or maybe a dedicated color */
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border: 2px solid #b8a6d8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #b8a6d8;
+  padding-bottom: var(--space-sm);
+}
+
+.title {
+  font-family: var(--font-label);
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.statusText {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--color-text-primary);
+}
+
+.statusError {
+  color: var(--color-status-danger);
+  animation: blink 1s infinite;
+}
+
+.statusLoading {
+  animation: pulse 1.5s infinite;
+}
+
+.statusSuccess {
+  color: var(--color-status-safe);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  color: var(--color-text-secondary);
+}
+
+.input {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  padding: var(--space-sm) var(--space-md);
+  background: #ffffff;
+  border: 2px solid #b8a6d8;
+  border-radius: var(--radius-badge);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  border-color: var(--color-text-primary);
+  box-shadow: 0 0 8px rgba(26, 26, 26, 0.2);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-md);
+}
+
+.toggleBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.toggleBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.submitBtn {
+  font-family: var(--font-label);
+  font-size: 1.2rem;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-text-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-badge);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--color-text-secondary);
+  transform: translateY(-2px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

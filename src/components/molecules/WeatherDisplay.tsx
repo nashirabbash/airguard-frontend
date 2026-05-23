@@ -189,7 +189,6 @@ const ICONS: Record<string, React.ReactElement> = {
 };
 
 // fallback = partly-cloudy-day
-ICONS['rain'] = ICONS['rain'];
 
 interface Props {
   condition: WeatherCondition;
