@@ -10,6 +10,7 @@ export interface SensorData {
   temperature: number;
   humidity: number;
   gasLevel: number;
+  hasLiveData: boolean; // true only after the first real sensor reading arrives from the backend
 }
 
 export type WeatherCondition =
