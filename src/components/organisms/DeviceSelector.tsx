@@ -5,9 +5,10 @@ interface Props {
   devices: Device[];
   selectedDeviceId: string | null;
   onSelect: (deviceId: string) => void;
+  onCreateClick: () => void;
 }
 
-export function DeviceSelector({ devices, selectedDeviceId, onSelect }: Props) {
+export function DeviceSelector({ devices, selectedDeviceId, onSelect, onCreateClick }: Props) {
   return (
     <div className={styles.root}>
       <div className={styles.card}>
@@ -41,6 +42,10 @@ export function DeviceSelector({ devices, selectedDeviceId, onSelect }: Props) {
             );
           })}
         </div>
+        
+        <button className={styles.createButton} onClick={onCreateClick}>
+          + TAMBAH PERANGKAT
+        </button>
       </div>
     </div>
   );

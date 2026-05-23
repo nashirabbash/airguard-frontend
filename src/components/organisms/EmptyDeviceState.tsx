@@ -1,6 +1,10 @@
 import styles from './EmptyDeviceState.module.css';
 
-export function EmptyDeviceState() {
+interface EmptyDeviceStateProps {
+  onCreateClick: () => void;
+}
+
+export function EmptyDeviceState({ onCreateClick }: EmptyDeviceStateProps) {
   return (
     <div className={styles.root}>
       <div className={styles.card}>
@@ -10,13 +14,16 @@ export function EmptyDeviceState() {
         </div>
 
         <div className={styles.body}>
-          <div className={styles.icon}>D</div> {/* 'D' character or standard symbol representing warning/device in LCD weather font */}
+          <div className={styles.icon}>D</div>
           <div className={styles.message}>
             TIDAK ADA PERANGKAT TERDAFTAR
           </div>
           <div className={styles.subMessage}>
-            SILAKAN DAFTARKAN PERANGKAT BARU MELALUI BACKEND API UNTUK MEMULAI PEMANTAUAN KUALITAS UDARA.
+            SILAKAN DAFTARKAN PERANGKAT BARU UNTUK MEMULAI PEMANTAUAN KUALITAS UDARA.
           </div>
+          <button className={styles.createButton} onClick={onCreateClick}>
+            DAFTAR PERANGKAT BARU
+          </button>
         </div>
       </div>
     </div>

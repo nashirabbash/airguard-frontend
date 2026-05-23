@@ -8,7 +8,15 @@ import { SensorGrid } from '../components/organisms/SensorGrid';
 import { AuthCard } from '../components/organisms/AuthCard';
 import { EmptyDeviceState } from '../components/organisms/EmptyDeviceState';
 import { DeviceSelector } from '../components/organisms/DeviceSelector';
-import { apiFetch, getMe, getDevices } from '../utils/api';
+import DeviceConfigModal from '../components/organisms/DeviceConfigModal';
+import ConfirmDeleteModal from '../components/organisms/ConfirmDeleteModal';
+import { apiFetch } from '../utils/api';
+
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setToken, logout } from '../store/slices/authSlice';
+import { setSelectedDeviceId } from '../store/slices/deviceSlice';
+import { useMeQuery } from '../hooks/useAuth';
+import { useDevicesQuery, useCreateDevice, useUpdateDevice, useDeleteDevice } from '../hooks/useDevices';
 
 const MOCK_DATA: SensorData = {
   wifiStatus: 'offline',
@@ -39,13 +47,28 @@ function formatTimestamp(isoString: string): string {
 export function AirMonitorPage() {
   const [time, setTime] = useState(() => formatTime(new Date()));
   const [data, setData] = useState<SensorData>(MOCK_DATA);
-  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('airguard_token'));
-  
-  // Device selection states
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(() => sessionStorage.getItem('airguard_selected_device'));
-  const [isLoadingDevices, setIsLoadingDevices] = useState<boolean>(false);
-  const [deviceError, setDeviceError] = useState<string | null>(null);
+
+  // Redux Client state
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+  const selectedDeviceId = useAppSelector((state) => state.device.selectedDeviceId);
+
+  // TanStack Query Server state
+  const { data: user, isLoading: isLoadingUser, error: userError, refetch: refetchUser } = useMeQuery();
+  const { data: devices = [], isLoading: isLoadingDevicesQuery, error: deviceQueryError, refetch: refetchDevices } = useDevicesQuery(user?.id);
+
+  const { mutateAsync: createDeviceMut, isPending: isCreating } = useCreateDevice();
+  const { mutateAsync: updateDeviceMut, isPending: isUpdating } = useUpdateDevice();
+  const { mutateAsync: deleteDeviceMut, isPending: isDeleting } = useDeleteDevice();
+
+  const isSubmitting = isCreating || isUpdating || isDeleting;
+  const isLoadingDevices = token ? (isLoadingUser || isLoadingDevicesQuery) : false;
+  const deviceError = (userError?.message) || (deviceQueryError?.message) || null;
+
+  // CRUD Modals state
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+  const [deviceToEdit, setDeviceToEdit] = useState<Device | undefined>(undefined);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const weather = useWeather();
 
@@ -56,15 +79,12 @@ export function AirMonitorPage() {
 
   const handleLogout = useCallback(async () => {
     if (token) {
-      await apiFetch('/api/auth/logout', { method: 'POST' });
+      await apiFetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     }
-    sessionStorage.removeItem('airguard_token');
-    sessionStorage.removeItem('airguard_selected_device');
-    setToken(null);
-    setDevices([]);
-    setSelectedDeviceId(null);
+    dispatch(logout());
+    dispatch(setSelectedDeviceId(null));
     setData(MOCK_DATA);
-  }, [token]);
+  }, [token, dispatch]);
 
   useEffect(() => {
     const onUnauthorized = () => handleLogout();
@@ -72,76 +92,31 @@ export function AirMonitorPage() {
     return () => window.removeEventListener('auth_unauthorized', onUnauthorized);
   }, [handleLogout]);
 
-  // Fetch current user and their devices when token changes
+  // Synchronize Redux selection when the devices query completes or updates
   useEffect(() => {
-    if (!token) return;
+    if (!token || isLoadingDevicesQuery || !devices) return;
 
-    let isMounted = true;
-    const fetchUserAndDevices = async () => {
-      setIsLoadingDevices(true);
-      setDeviceError(null);
-      try {
-        const userRes = await getMe();
-        if (!isMounted) return;
-
-        if (userRes.success && userRes.data) {
-          const deviceRes = await getDevices(userRes.data.id);
-          if (!isMounted) return;
-
-          if (deviceRes.success && deviceRes.data) {
-            const fetchedDevices = deviceRes.data;
-            setDevices(fetchedDevices);
-            
-            if (fetchedDevices.length === 0) {
-              setSelectedDeviceId(null);
-              sessionStorage.removeItem('airguard_selected_device');
-            } else {
-              // Check if currently stored device exists in the fetched list
-              const storedId = sessionStorage.getItem('airguard_selected_device');
-              const exists = fetchedDevices.some(d => d.deviceId === storedId);
-              if (exists && storedId) {
-                setSelectedDeviceId(storedId);
-              } else {
-                // If there's exactly 1 device, select it automatically!
-                if (fetchedDevices.length === 1) {
-                  const autoId = fetchedDevices[0].deviceId;
-                  setSelectedDeviceId(autoId);
-                  sessionStorage.setItem('airguard_selected_device', autoId);
-                } else {
-                  // Multiple devices and no valid stored selection, require user to select
-                  setSelectedDeviceId(null);
-                  sessionStorage.removeItem('airguard_selected_device');
-                }
-              }
-            }
-          } else {
-            setDeviceError(deviceRes.message || 'GAGAL MENGAMBIL DAFTAR PERANGKAT');
-          }
+    if (devices.length === 0) {
+      if (selectedDeviceId !== null) {
+        dispatch(setSelectedDeviceId(null));
+      }
+    } else {
+      const exists = devices.some(d => d.deviceId === selectedDeviceId);
+      if (exists && selectedDeviceId) {
+        // Keep selected device
+      } else {
+        if (devices.length === 1) {
+          dispatch(setSelectedDeviceId(devices[0].deviceId));
         } else {
-          setDeviceError(userRes.message || 'GAGAL MENGAMBIL DATA PENGGUNA');
-        }
-      } catch {
-        if (!isMounted) return;
-        setDeviceError('KONEKSI API GAGAL');
-      } finally {
-        if (isMounted) {
-          setIsLoadingDevices(false);
+          dispatch(setSelectedDeviceId(null));
         }
       }
-    };
-
-
-    fetchUserAndDevices();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [token]);
+    }
+  }, [devices, selectedDeviceId, token, isLoadingDevicesQuery, dispatch]);
 
   const handleSelectDevice = useCallback((deviceId: string) => {
-    setSelectedDeviceId(deviceId);
-    sessionStorage.setItem('airguard_selected_device', deviceId);
-  }, []);
+    dispatch(setSelectedDeviceId(deviceId));
+  }, [dispatch]);
 
   // WebSocket synchronization based on token and active selectedDeviceId
   useEffect(() => {
@@ -214,8 +189,46 @@ export function AirMonitorPage() {
   }, [token, selectedDeviceId]);
 
   const handleAuthSuccess = (newToken: string) => {
-    sessionStorage.setItem('airguard_token', newToken);
-    setToken(newToken);
+    dispatch(setToken(newToken));
+  };
+
+  const openCreateModal = useCallback(() => {
+    setDeviceToEdit(undefined);
+    setIsConfigModalOpen(true);
+  }, []);
+
+  const openEditModal = useCallback(() => {
+    if (!selectedDeviceId) return;
+    const device = devices.find(d => d.deviceId === selectedDeviceId);
+    if (device) {
+      setDeviceToEdit(device);
+      setIsConfigModalOpen(true);
+    }
+  }, [selectedDeviceId, devices]);
+
+  const handleConfigSubmit = async (config: Omit<Device, 'userId' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      if (deviceToEdit) {
+        await updateDeviceMut({ deviceId: deviceToEdit.deviceId, config });
+      } else {
+        await createDeviceMut(config);
+      }
+      setIsConfigModalOpen(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Terjadi kesalahan pada server');
+    }
+  };
+
+  const handleDeleteDevice = async () => {
+    if (!selectedDeviceId) return;
+    try {
+      await deleteDeviceMut(selectedDeviceId);
+      dispatch(setSelectedDeviceId(null));
+      setData(MOCK_DATA);
+      setIsDeleteModalOpen(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Terjadi kesalahan pada server');
+    }
   };
 
   return (
@@ -279,7 +292,10 @@ export function AirMonitorPage() {
                   ERR: {deviceError.toUpperCase()}
                 </span>
                 <button 
-                  onClick={() => setToken(token)}
+                  onClick={() => {
+                    if (userError) refetchUser();
+                    if (deviceQueryError) refetchDevices();
+                  }}
                   style={{
                     fontFamily: 'var(--font-label)',
                     padding: '8px 16px',
@@ -294,12 +310,13 @@ export function AirMonitorPage() {
                 </button>
               </div>
             ) : devices.length === 0 ? (
-              <EmptyDeviceState />
+              <EmptyDeviceState onCreateClick={openCreateModal} />
             ) : !selectedDeviceId ? (
               <DeviceSelector
                 devices={devices}
                 selectedDeviceId={selectedDeviceId}
                 onSelect={handleSelectDevice}
+                onCreateClick={openCreateModal}
               />
             ) : (
               <SensorGrid
@@ -325,8 +342,7 @@ export function AirMonitorPage() {
           {devices.length > 1 && selectedDeviceId && (
             <button
               onClick={() => {
-                setSelectedDeviceId(null);
-                sessionStorage.removeItem('airguard_selected_device');
+                dispatch(setSelectedDeviceId(null));
                 setData(MOCK_DATA);
               }}
               style={{
@@ -366,7 +382,76 @@ export function AirMonitorPage() {
           </button>
         </div>
       )}
+
+      {selectedDeviceId && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '24px',
+          display: 'flex',
+          gap: '12px',
+          zIndex: 100
+        }}>
+          <button
+            onClick={openEditModal}
+            style={{
+              padding: '8px 16px',
+              fontFamily: 'var(--font-label)',
+              background: '#b8a6d8',
+              color: '#1a1a2e',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+              transition: 'transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            EDIT KONFIGURASI
+          </button>
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            style={{
+              padding: '8px 16px',
+              fontFamily: 'var(--font-label)',
+              background: 'transparent',
+              color: 'var(--color-status-danger)',
+              border: '1px solid var(--color-status-danger)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.background = 'rgba(255,85,85,0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = 'transparent';
+            }}
+          >
+            HAPUS PERANGKAT
+          </button>
+        </div>
+      )}
+
+      <DeviceConfigModal
+        isOpen={isConfigModalOpen}
+        onClose={() => setIsConfigModalOpen(false)}
+        initialDevice={deviceToEdit}
+        onSubmit={handleConfigSubmit}
+        isLoading={isSubmitting}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        deviceId={selectedDeviceId || ''}
+        isDeleting={isSubmitting}
+        onConfirm={handleDeleteDevice}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </div>
   );
 }
-
