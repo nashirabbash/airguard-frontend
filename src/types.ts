@@ -28,3 +28,24 @@ export interface WeatherState {
   city: string;
   loading: boolean;
 }
+
+export interface User {
+  id: number;
+  username: string;
+  lastLogin?: string;
+}
+
+export interface Device {
+  deviceId: string;
+  userId: number;
+  tempUnsafeHigh: number;
+  tempUnsafeLow: number;
+  tempWarningHigh: number;
+  tempWarningLow: number;
+  humidityUnsafeHigh: number;
+  humidityUnsafeLow: number;
+  humidityWarningHigh: number;
+  humidityWarningLow: number;
+  mq135BaselineRuntimeOnly: number;
+}
+
