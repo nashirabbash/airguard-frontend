@@ -6,8 +6,17 @@
   flex-direction: column;
   gap: var(--space-sm);
   animation: fadeInUp 0.4s ease both;
+  height: fit-content;
 }
-.temp     { background: var(--color-card-temp); }
-.humidity { background: var(--color-card-humidity); }
-.gas      { background: var(--color-card-gas); }
-.flash    { animation: flash 0.2s ease !important; }
+.temp {
+  background: var(--color-card-temp);
+}
+.humidity {
+  background: var(--color-card-humidity);
+}
+.gas {
+  background: var(--color-card-gas);
+}
+.flash {
+  animation: flash 0.2s ease !important;
+}

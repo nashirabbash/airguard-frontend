@@ -22,13 +22,13 @@ import { useMeQuery } from '../hooks/useAuth';
 import { useDevicesQuery, useCreateDevice, useUpdateDevice, useDeleteDevice } from '../hooks/useDevices';
 
 const MOCK_DATA: SensorData = {
-  wifiStatus: 'offline',
+  wifiStatus: 'online',
   roomStatus: 'aman',
-  lastUpdate: '--',
-  temperature: 0,
-  humidity: 0,
-  gasLevel: 0,
-  hasLiveData: false,
+  lastUpdate: new Date().toLocaleString('id-ID'),
+  temperature: 24.5,
+  humidity: 45,
+  gasLevel: 350,
+  hasLiveData: true,
 };
 
 // Map backend room_status strings (lowercase) to UI RoomStatus values
