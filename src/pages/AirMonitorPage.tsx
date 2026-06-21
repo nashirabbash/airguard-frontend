@@ -44,8 +44,7 @@ function mapRoomStatus(backendStatus: string): RoomStatus {
 function formatTime(date: Date): string {
   const hh = String(date.getHours()).padStart(2, '0');
   const mm = String(date.getMinutes()).padStart(2, '0');
-  const ss = String(date.getSeconds()).padStart(2, '0');
-  return `${hh}:${mm}:${ss}`;
+  return `${hh}:${mm}`;
 }
 
 function formatTimestamp(isoString: string): string {
