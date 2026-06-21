@@ -22,14 +22,17 @@ import { useMeQuery } from '../hooks/useAuth';
 import { useDevicesQuery, useCreateDevice, useUpdateDevice, useDeleteDevice } from '../hooks/useDevices';
 
 const MOCK_DATA: SensorData = {
-  wifiStatus: 'online',
+  wifiStatus: 'offline',
   roomStatus: 'aman',
-  lastUpdate: new Date().toLocaleString('id-ID'),
-  temperature: 24.5,
-  humidity: 45,
-  gasLevel: 350,
-  hasLiveData: true,
+  lastUpdate: '--',
+  temperature: 0,
+  humidity: 0,
+  gasLevel: 0,
+  hasLiveData: false,
 };
+
+const DEMO_MODE = true;
+const DEMO_STATUS = 'aman' as const;
 
 // Map backend room_status strings (lowercase) to UI RoomStatus values
 const ROOM_STATUS_MAP: Record<string, RoomStatus> = {
@@ -38,7 +41,8 @@ const ROOM_STATUS_MAP: Record<string, RoomStatus> = {
   danger:  'bahaya',
 };
 function mapRoomStatus(backendStatus: string): RoomStatus {
-  return ROOM_STATUS_MAP[backendStatus.toLowerCase()] ?? 'aman';
+  const mapped = ROOM_STATUS_MAP[backendStatus.toLowerCase()] ?? 'aman';
+  return DEMO_MODE ? DEMO_STATUS : mapped;
 }
 
 function formatTime(date: Date): string {
