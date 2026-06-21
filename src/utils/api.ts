@@ -40,7 +40,15 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('API Error:', error);
+    const { logger } = await import('./logger');
+    logger.error({
+      event: 'api:fetch:error',
+      endpoint,
+      method: options.method ?? 'GET',
+      err: error instanceof Error
+        ? { message: error.message, name: error.name, stack: error.stack }
+        : { message: String(error) },
+    });
     return {
       success: false,
       code: 500,

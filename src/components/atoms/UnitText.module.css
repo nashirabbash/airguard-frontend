@@ -1,5 +1,5 @@
 .root {
-  font-family: var(--font-display);
+  font-family: var(--font-label);
   color: var(--color-text-secondary);
   line-height: 1;
   align-self: flex-end;

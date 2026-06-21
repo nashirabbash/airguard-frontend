@@ -51,7 +51,7 @@
   --color-status-warning: #cc8800;
 
   --font-display: 'DSEG7Classic', 'Courier New', monospace;
-  --font-label: 'DSEG14Classic', 'Courier New', monospace;
+  --font-label: 'Roboto', system-ui, -apple-system, sans-serif;
   --font-weather: 'DSEGWeather', sans-serif;
 
   --text-clock: clamp(3rem, 10vw, 6rem);

@@ -37,7 +37,7 @@
 }
 
 .statusText {
-  font-family: var(--font-display);
+  font-family: var(--font-label);
   font-size: 1.2rem;
   color: var(--color-text-primary);
 }
@@ -74,7 +74,7 @@
 }
 
 .input {
-  font-family: var(--font-display);
+  font-family: var(--font-label);
   font-size: 1.5rem;
   padding: var(--space-sm) var(--space-md);
   background: #ffffff;

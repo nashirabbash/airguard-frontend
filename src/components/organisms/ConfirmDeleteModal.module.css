@@ -46,7 +46,7 @@
 }
 
 .modalTitle {
-  font-family: 'DSEG14Classic', monospace;
+  font-family: var(--font-label);
   color: var(--lcd-text-warning, #ff5555);
   font-size: 1.5rem;
   text-align: center;
@@ -74,7 +74,7 @@
   flex: 1;
   padding: 0.75rem;
   border-radius: 4px;
-  font-family: 'DSEG14Classic', monospace;
+  font-family: var(--font-label);
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;

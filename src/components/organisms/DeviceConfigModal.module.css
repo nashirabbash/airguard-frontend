@@ -57,7 +57,7 @@
 }
 
 .modalTitle {
-  font-family: 'DSEG14Classic', monospace;
+  font-family: var(--font-label);
   color: var(--lcd-text);
   font-size: 1.2rem;
   text-shadow: 0 0 5px rgba(184, 166, 216, 0.5);
@@ -93,7 +93,7 @@
 }
 
 .sectionTitle {
-  font-family: 'DSEG14Classic', monospace;
+  font-family: var(--font-label);
   font-size: 0.9rem;
   color: var(--lcd-text);
   opacity: 0.8;
@@ -159,7 +159,7 @@
 .cancelButton, .submitButton {
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
-  font-family: 'DSEG14Classic', monospace;
+  font-family: var(--font-label);
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;

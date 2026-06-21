@@ -11,6 +11,9 @@ import { DeviceSelector } from '../components/organisms/DeviceSelector';
 import DeviceConfigModal from '../components/organisms/DeviceConfigModal';
 import ConfirmDeleteModal from '../components/organisms/ConfirmDeleteModal';
 import { apiFetch } from '../utils/api';
+import { logger } from '../utils/logger';
+
+const wsLogger = logger.child({ context: 'websocket' });
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setToken, logout } from '../store/slices/authSlice';
@@ -160,7 +163,7 @@ export function AirMonitorPage() {
           const msg = JSON.parse(event.data);
           
           if (msg.type === 'error') {
-            console.error('WebSocket error response received:', msg.error?.message || 'Unknown error');
+            wsLogger.error({ event: 'ws:server:error', code: msg.error?.code, message: msg.error?.message ?? 'Unknown error' });
             if (msg.error?.code === 'UNAUTHORIZED') {
               window.dispatchEvent(new Event('auth_unauthorized'));
             }
@@ -198,7 +201,7 @@ export function AirMonitorPage() {
             }
           }
         } catch (e) {
-          console.error('Failed to parse WS message', e);
+          wsLogger.error({ event: 'ws:parse:error', err: e instanceof Error ? { message: e.message, stack: e.stack } : { message: String(e) } });
         }
       };
 
@@ -209,7 +212,7 @@ export function AirMonitorPage() {
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket runtime connection error:', error);
+        wsLogger.error({ event: 'ws:connection:error', err: { message: String(error) } });
         ws.close();
       };
     };
