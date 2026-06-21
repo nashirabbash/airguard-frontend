@@ -42,11 +42,10 @@ function mapRoomStatus(backendStatus: string): RoomStatus {
 }
 
 function formatTime(date: Date): string {
-  return date.toLocaleTimeString('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
+  const hh = String(date.getHours()).padStart(2, '0');
+  const mm = String(date.getMinutes()).padStart(2, '0');
+  const ss = String(date.getSeconds()).padStart(2, '0');
+  return `${hh}:${mm}:${ss}`;
 }
 
 function formatTimestamp(isoString: string): string {
